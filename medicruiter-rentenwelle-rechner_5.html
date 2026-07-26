@@ -1,0 +1,437 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>medicruiter | Wie groß ist Ihre Pflegepersonal-Lücke?</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#EEF1EA;
+  --paper:#FFFFFF;
+  --ink:#152530;
+  --ink-soft:#54636B;
+  --line:#DADFD6;
+  --urgent:#B94A1C;
+  --urgent-bg:#F4DDD0;
+  --solution:#1B6B57;
+  --solution-bg:#DCEBE5;
+  --classic:#B08A2E;
+  --plus:#5B4B8A;
+  --radius:14px;
+  --font-display:'Fraunces', serif;
+  --font-body:'IBM Plex Sans', sans-serif;
+  --font-mono:'IBM Plex Mono', monospace;
+}
+*{box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--font-body);line-height:1.6;-webkit-font-smoothing:antialiased;}
+a{color:inherit;}
+button{font-family:inherit;}
+:focus-visible{outline:2px solid var(--solution);outline-offset:2px;}
+
+.topbar{display:flex;align-items:baseline;justify-content:space-between;max-width:960px;margin:0 auto;padding:28px 24px 0;}
+.wordmark{font-family:var(--font-display);font-weight:600;font-size:22px;letter-spacing:-0.01em;}
+.topbar-tag{font-size:13px;color:var(--ink-soft);}
+
+.hero{max-width:760px;margin:0 auto;padding:48px 24px 40px;}
+.eyebrow{font-size:13px;text-transform:uppercase;letter-spacing:0.08em;color:var(--solution);font-weight:600;margin:0 0 16px;}
+.hero h1{font-family:var(--font-display);font-weight:600;font-size:clamp(28px,4vw,44px);line-height:1.15;margin:0 0 20px;}
+.hero .lede{font-size:17px;color:var(--ink-soft);max-width:620px;margin:0;}
+
+.calc-section{padding:8px 24px 8px;}
+.calc-card{max-width:912px;margin:0 auto;background:var(--paper);border:1px solid var(--line);border-radius:var(--radius);display:grid;grid-template-columns:1fr 1fr;overflow:hidden;}
+.calc-inputs{padding:36px;border-right:1px solid var(--line);display:flex;flex-direction:column;gap:24px;}
+.calc-inputs label{display:flex;flex-direction:column;gap:8px;font-size:14px;font-weight:500;}
+.calc-inputs input[type=number]{font-family:var(--font-mono);font-size:20px;padding:10px 12px;border:1px solid var(--line);border-radius:8px;background:var(--bg);color:var(--ink);width:140px;}
+input[type=range]{width:100%;accent-color:var(--solution);}
+#shareValue{font-family:var(--font-mono);font-weight:600;color:var(--solution);}
+.horizon-label{font-size:14px;font-weight:500;display:block;margin-bottom:8px;}
+.horizon-buttons{display:flex;gap:8px;}
+.horizon-buttons button{flex:1;padding:10px 8px;border:1px solid var(--line);background:var(--paper);border-radius:8px;font-size:13px;font-weight:500;color:var(--ink-soft);cursor:pointer;transition:background .15s ease,color .15s ease,border-color .15s ease;}
+.horizon-buttons button.active{background:var(--solution);border-color:var(--solution);color:#fff;}
+.calc-result{padding:36px;display:flex;flex-direction:column;justify-content:center;gap:14px;background:var(--urgent-bg);}
+.result-number{font-family:var(--font-mono);font-weight:600;font-size:56px;line-height:1;color:var(--urgent);}
+.result-label{font-size:15px;max-width:280px;}
+.dot-grid{display:grid;grid-template-columns:repeat(10,14px);gap:6px;margin-top:6px;}
+.dot-grid span{width:14px;height:14px;border-radius:3px;background:rgba(0,0,0,0.12);display:block;transition:background .15s ease;}
+.dot-grid span.retiring{background:var(--urgent);}
+.calc-note{max-width:912px;margin:16px auto 0;padding:0 4px;font-size:13px;color:var(--ink-soft);}
+.split-note{font-size:13px;color:var(--ink);border-top:1px solid rgba(0,0,0,0.1);padding-top:12px;margin-top:2px;}
+.split-note strong{font-family:var(--font-mono);font-weight:600;}
+
+.race-section{padding:56px 24px 48px;max-width:912px;margin:0 auto;}
+.race-section h2{font-family:var(--font-display);font-weight:600;font-size:28px;margin:0 0 8px;}
+.race-sub{color:var(--ink-soft);margin:0 0 24px;font-size:15px;max-width:640px;}
+#timelineChart{width:100%;height:auto;display:block;margin-top:4px;}
+.legend{display:flex;flex-wrap:wrap;gap:20px;margin:18px 0 28px;font-size:13px;color:var(--ink-soft);}
+.legend-item{display:flex;align-items:center;gap:8px;}
+.swatch{width:16px;height:4px;border-radius:2px;display:inline-block;}
+.swatch-problem{background:var(--urgent);}
+.swatch-medicruiter{background:var(--solution);}
+.swatch-klassisch{background:var(--classic);}
+.swatch-ausbildung{background:var(--ink-soft);}
+.swatch-plus{background:var(--plus);}
+.gap-stats{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;}
+.gap-card{border:1px solid var(--line);border-radius:12px;padding:20px;background:var(--paper);}
+.gap-card.highlight{border-color:var(--solution);background:var(--solution-bg);}
+.gap-name{font-size:13px;font-weight:600;color:var(--ink-soft);margin-bottom:8px;}
+.gap-card.highlight .gap-name{color:var(--solution);}
+.gap-number{font-family:var(--font-mono);font-weight:600;font-size:32px;margin-bottom:6px;}
+.gap-card.highlight .gap-number{color:var(--solution);}
+.gap-desc{font-size:13px;color:var(--ink-soft);}
+
+.trust-section{background:var(--paper);border-top:1px solid var(--line);border-bottom:1px solid var(--line);padding:40px 24px;}
+.trust-grid{max-width:912px;margin:0 auto;display:flex;gap:48px;flex-wrap:wrap;}
+.trust-item{display:flex;flex-direction:column;gap:4px;}
+.trust-num{font-family:var(--font-mono);font-weight:600;font-size:28px;}
+.trust-text{font-size:13px;color:var(--ink-soft);max-width:190px;}
+.trust-cert{max-width:912px;margin:24px auto 0;font-size:13px;color:var(--ink-soft);}
+
+.cta-section{max-width:720px;margin:0 auto;padding:64px 24px;}
+.cta-section h2{font-family:var(--font-display);font-weight:600;font-size:30px;margin:0 0 12px;}
+.cta-section > p{color:var(--ink-soft);font-size:16px;margin:0 0 32px;}
+#leadForm{display:flex;flex-direction:column;gap:16px;}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:16px;}
+.form-row label{display:flex;flex-direction:column;gap:6px;font-size:13px;font-weight:500;}
+.form-row input{font-family:var(--font-body);font-size:15px;padding:12px 14px;border:1px solid var(--line);border-radius:8px;background:var(--paper);color:var(--ink);}
+#leadForm button{align-self:flex-start;padding:14px 28px;background:var(--urgent);color:#fff;border:none;border-radius:8px;font-size:15px;font-weight:600;cursor:pointer;transition:background .15s ease;}
+#leadForm button:hover{background:#93401a;}
+.form-success{margin-top:16px;padding:16px 20px;background:var(--solution-bg);color:var(--solution);border-radius:8px;font-size:15px;font-weight:500;}
+
+footer{padding:32px 24px 48px;text-align:center;font-size:13px;color:var(--ink-soft);}
+
+@media (max-width:880px){
+  .gap-stats{grid-template-columns:repeat(2,1fr);}
+}
+@media (max-width:720px){
+  .calc-card{grid-template-columns:1fr;}
+  .calc-inputs{border-right:none;border-bottom:1px solid var(--line);}
+  .gap-stats{grid-template-columns:1fr;}
+  .form-row{grid-template-columns:1fr;}
+}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;}}
+</style>
+</head>
+<body>
+
+<header class="topbar">
+  <div class="wordmark">medicruiter</div>
+  <div class="topbar-tag">Pflegefachkräfte aus aller Welt</div>
+</header>
+
+<section class="hero">
+  <p class="eyebrow">Personalprognose für Kliniken &amp; Pflegeeinrichtungen</p>
+  <h1>Wie viele Ihrer Pflegekräfte gehen in Rente, bevor Sie Ersatz gefunden haben?</h1>
+  <p class="lede">Die geburtenstarken Jahrgänge in der Pflege erreichen in den kommenden Jahren das Renteneintrittsalter. Rechnen Sie in wenigen Sekunden, wie groß Ihre Lücke wird.</p>
+</section>
+
+<section class="calc-section">
+  <div class="calc-card">
+    <div class="calc-inputs">
+      <label>Pflegekräfte gesamt (Köpfe)
+        <input type="number" id="totalInput" value="250" min="1">
+      </label>
+      <label>Anteil 55 Jahre oder älter
+        <input type="range" id="shareSlider" min="0" max="50" value="50">
+        <span id="shareValue">50%</span>
+      </label>
+      <div>
+        <span class="horizon-label">Planungshorizont</span>
+        <div class="horizon-buttons">
+          <button type="button" data-years="3">3 Jahre</button>
+          <button type="button" data-years="5" class="active">5 Jahre</button>
+          <button type="button" data-years="10">10 Jahre</button>
+        </div>
+      </div>
+    </div>
+    <div class="calc-result">
+      <div class="result-number"><span id="retiringCount">0</span></div>
+      <div class="result-label">Pflegekräfte gehen bis <span id="targetYear">–</span> voraussichtlich in Rente</div>
+      <div class="dot-grid" id="dotGrid"></div>
+      <div class="split-note">Empfehlung: <strong><span id="plusNeeded">–</span></strong> über medicruiter Plus (4–8 Wochen) + <strong><span id="regularNeeded">–</span></strong> über das reguläre Programm</div>
+    </div>
+  </div>
+  <p class="calc-note">Vereinfachte Schätzung: Wir nehmen an, dass sich Renteneintritte aus der Gruppe 55+ gleichmäßig auf die nächsten zehn Jahre verteilen. Für eine Analyse Ihrer tatsächlichen Altersstruktur sprechen wir das gern im Erstgespräch durch.</p>
+</section>
+
+<section class="race-section">
+  <h2>Der Wettlauf gegen die Uhr</h2>
+  <p class="race-sub">Ausgehend von Ihrem heutigen Bestand von <span id="raceTotalLabel">250</span> Pflegekräften: So entwickelt sich Ihre Mannschaftsstärke, wenn Sie gar nichts tun – und wie schnell die Recruiting-Wege sie wieder auffüllen. medicruiter Plus schließt dabei die Lücke der Anlaufphase vollständig, bevor nahtlos das reguläre Programm übernimmt. Die gepunktete Linie zeigt den Ausgangsbestand, die betonte Linie das Jahr 3.</p>
+  <svg id="timelineChart" viewBox="0 0 880 400" role="img" aria-label="Entwicklung des Pflegepersonalbestands über die Zeit, je Recruiting-Weg"></svg>
+  <div class="legend">
+    <span class="legend-item"><span class="swatch swatch-problem"></span>Gar nix tun</span>
+    <span class="legend-item"><span class="swatch swatch-plus"></span>medicruiter Plus</span>
+    <span class="legend-item"><span class="swatch swatch-medicruiter"></span>medicruiter</span>
+    <span class="legend-item"><span class="swatch swatch-klassisch"></span>Klassische Personalvermittlung</span>
+    <span class="legend-item"><span class="swatch swatch-ausbildung"></span>Eigene Ausbildung</span>
+  </div>
+  <div class="gap-stats">
+    <div class="gap-card">
+      <div class="gap-name">Gar nix tun</div>
+      <div class="gap-number"><span id="deltaNixTun">–</span></div>
+      <div class="gap-desc">Pflegekräfte nach 3 Jahren, gemessen an heute · erholt sich nicht von selbst</div>
+    </div>
+    <div class="gap-card">
+      <div class="gap-name">Klassische Personalvermittlung</div>
+      <div class="gap-number"><span id="deltaKlassisch">–</span></div>
+      <div class="gap-desc">Pflegekräfte nach 3 Jahren · zurück auf Ausgangsniveau nach <span id="closeKlassisch">–</span></div>
+    </div>
+    <div class="gap-card">
+      <div class="gap-name">medicruiter</div>
+      <div class="gap-number"><span id="deltaMedicruiter">–</span></div>
+      <div class="gap-desc">Pflegekräfte nach 3 Jahren · zurück auf Ausgangsniveau nach <span id="closeMedicruiter">–</span></div>
+    </div>
+    <div class="gap-card highlight">
+      <div class="gap-name">medicruiter Plus</div>
+      <div class="gap-number"><span id="deltaPlus">–</span></div>
+      <div class="gap-desc">Pflegekräfte nach 3 Jahren · Delle von höchstens <span id="plusMaxGap">–</span>, komplett aufgeholt nach <span id="closePlus">–</span></div>
+    </div>
+  </div>
+</section>
+
+<section class="trust-section">
+  <div class="trust-grid">
+    <div class="trust-item"><span class="trust-num">2020</span><span class="trust-text">gegründet in Deutschland</span></div>
+    <div class="trust-item"><span class="trust-num">3</span><span class="trust-text">Kontinente im Talentpool: Lateinamerika, Asien, Osteuropa</span></div>
+    <div class="trust-item"><span class="trust-num">6–9</span><span class="trust-text">Monate bis zur Festanstellung</span></div>
+  </div>
+  <p class="trust-cert">Zertifiziert für faires und ethisches Recruiting durch die Gütegemeinschaft Anwerbung und Vermittlung von Pflegefachkräften aus dem Ausland e. V.</p>
+</section>
+
+<section class="cta-section">
+  <h2>Schließen Sie Ihre Lücke, bevor sie entsteht</h2>
+  <p>Sichern Sie sich ein unverbindliches Erstgespräch – wir zeigen Ihnen konkret, wie sich <span id="ctaCount">0</span> offene Stellen in 6–9 Monaten besetzen lassen.</p>
+  <form id="leadForm">
+    <div class="form-row">
+      <label>Name<input type="text" name="name" required></label>
+      <label>E-Mail<input type="email" name="email" required></label>
+    </div>
+    <div class="form-row">
+      <label>Klinik / Einrichtung<input type="text" name="organisation" required></label>
+      <label>Telefon (optional)<input type="tel" name="phone"></label>
+    </div>
+    <button type="submit">Erstgespräch anfragen</button>
+  </form>
+  <div id="formSuccess" class="form-success" hidden>Danke! Wir melden uns innerhalb von 24 Stunden bei Ihnen.</div>
+</section>
+
+<footer>medicruiter GmbH · Düsseldorf</footer>
+
+<script>
+const totalInput = document.getElementById('totalInput');
+const shareSlider = document.getElementById('shareSlider');
+const shareValue = document.getElementById('shareValue');
+const horizonButtons = document.querySelectorAll('.horizon-buttons button');
+const retiringCountEl = document.getElementById('retiringCount');
+const targetYearEl = document.getElementById('targetYear');
+const ctaCountEl = document.getElementById('ctaCount');
+const dotGrid = document.getElementById('dotGrid');
+const plusNeededEl = document.getElementById('plusNeeded');
+const regularNeededEl = document.getElementById('regularNeeded');
+
+let horizonYears = 5;
+
+for (let i = 0; i < 50; i++) {
+  const dot = document.createElement('span');
+  dotGrid.appendChild(dot);
+}
+
+const timelineChart = document.getElementById('timelineChart');
+const raceTotalLabel = document.getElementById('raceTotalLabel');
+const deltaNixTun = document.getElementById('deltaNixTun');
+const deltaKlassisch = document.getElementById('deltaKlassisch');
+const closeKlassisch = document.getElementById('closeKlassisch');
+const deltaMedicruiter = document.getElementById('deltaMedicruiter');
+const closeMedicruiter = document.getElementById('closeMedicruiter');
+const deltaPlus = document.getElementById('deltaPlus');
+const plusMaxGap = document.getElementById('plusMaxGap');
+const closePlus = document.getElementById('closePlus');
+
+const LAG_AUSBILDUNG = 36, LAG_KLASSISCH = 15, LAG_MEDICRUITER = 7.5, YEAR3_MONTHS = 36;
+// medicruiter Plus: 4-8 Wochen Time-to-fill (~1,5 Monate). Genutzt wird Plus nur,
+// bis die reguläre medicruiter-Pipeline ihre volle Kapazität erreicht hat
+// (LAG_MEDICRUITER Monate) - danach deckt das reguläre Programm neue
+// Renteneintritte laufend ab, ohne dass sich erneut ein Rückstand aufbaut.
+const LAG_PLUS = 1.5;
+
+// Reaktives Modell: Eine Stelle wird erst nachbesetzt, wenn sie frei wird, und
+// braucht dann die durchschnittliche Time-to-fill des jeweiligen Wegs (in Monaten).
+// "Gar nix tun" entspricht einer unendlichen Vorlaufzeit (nie ersetzt).
+function clamp01(v) { return Math.max(0, Math.min(1, v)); }
+function clampRange(v, lo, hi) { return Math.max(lo, Math.min(hi, v)); }
+function bestandAt(t, total, r, h, lag) {
+  if (h <= 0) return total;
+  const retFrac = clamp01(t / h);
+  const hireFrac = isFinite(lag) ? clamp01((t - lag) / h) : 0;
+  return total - r * retFrac + r * hireFrac;
+}
+// Hybrid: Plus deckt alle Renteneintritte bis zum Reifepunkt der regulären
+// Pipeline (lagSlow) mit ihrer eigenen, kurzen Vorlaufzeit (lagPlus) ab. Sobald
+// die reguläre Pipeline ausgereift ist, deckt sie NEUE Renteneintritte sofort ab
+// (keine erneute Verzögerung) - nur der Rückstand aus der Anlaufphase wird noch
+// von Plus nachgezogen, bis er (lagSlow + lagPlus Monate nach Start) getilgt ist.
+function bestandAtPlus(t, total, r, h, lagPlus, lagSlow) {
+  if (h <= 0) return total;
+  const retFrac = clamp01(t / h);
+  const earlyBound = Math.min(lagSlow, h);
+  const earlyHires = clampRange(t - lagPlus, 0, earlyBound);
+  const lateWidth = Math.max(0, h - earlyBound);
+  const lateHires = lateWidth > 0 ? clampRange(t - earlyBound, 0, lateWidth) : 0;
+  const hires = (r / h) * (earlyHires + lateHires);
+  return total - r * retFrac + hires;
+}
+function closureLabel(H, lag) {
+  const totalM = Math.round(H + lag);
+  const years = Math.floor(totalM / 12);
+  const months = totalM % 12;
+  return months > 0 ? years + ' J., ' + months + ' Mon.' : years + ' Jahre';
+}
+
+function buildChart(total, R, H) {
+  const width = 880, height = 400;
+  const marginLeft = 54, marginRight = 24, marginTop = 24, marginBottom = 44;
+  const plotW = width - marginLeft - marginRight;
+  const plotH = height - marginTop - marginBottom;
+  const maxMonth = Math.ceil((H + LAG_AUSBILDUNG + 6) / 12) * 12;
+
+  const yMinRaw = total - R, yMaxRaw = total;
+  const pad = Math.max(2, Math.round(R * 0.1));
+  const yMin = yMinRaw - pad, yMax = yMaxRaw + pad;
+  const yRange = (yMax - yMin) || 1;
+
+  const x = (m) => marginLeft + (Math.min(m, maxMonth) / maxMonth) * plotW;
+  const y = (v) => marginTop + plotH - ((v - yMin) / yRange) * plotH;
+
+  const vNixTun = (t) => bestandAt(t, total, R, H, Infinity);
+  const vAusbildung = (t) => bestandAt(t, total, R, H, LAG_AUSBILDUNG);
+  const vKlassisch = (t) => bestandAt(t, total, R, H, LAG_KLASSISCH);
+  const vMedicruiter = (t) => bestandAt(t, total, R, H, LAG_MEDICRUITER);
+  const vPlus = (t) => bestandAtPlus(t, total, R, H, LAG_PLUS, LAG_MEDICRUITER);
+
+  function pathForFn(fn) {
+    const step = Math.max(1, Math.ceil(maxMonth / 120));
+    const pts = [];
+    for (let t = 0; t < maxMonth; t += step) pts.push(t);
+    pts.push(maxMonth);
+    return pts.map((t, i) => (i === 0 ? 'M' : 'L') + x(t).toFixed(1) + ' ' + y(fn(t)).toFixed(1)).join(' ');
+  }
+
+  let svg = '';
+  [...new Set([yMinRaw, Math.round((yMinRaw + yMaxRaw) / 2), yMaxRaw])].forEach((t) => {
+    const yy = y(t).toFixed(1);
+    svg += `<line x1="${marginLeft}" y1="${yy}" x2="${width - marginRight}" y2="${yy}" stroke="rgba(0,0,0,0.08)" stroke-width="1"/>`;
+    svg += `<text x="${marginLeft - 10}" y="${yy}" text-anchor="end" dominant-baseline="central" font-size="12" font-family="'IBM Plex Mono', monospace" fill="var(--ink-soft)">${Math.round(t)}</text>`;
+  });
+  const yTotal = y(total).toFixed(1);
+  svg += `<line x1="${marginLeft}" y1="${yTotal}" x2="${width - marginRight}" y2="${yTotal}" stroke="var(--ink-soft)" stroke-width="1" stroke-dasharray="2 4" opacity="0.6"/>`;
+
+  for (let m = 0; m <= maxMonth; m += 12) {
+    const xx = x(m).toFixed(1);
+    const isY3 = m === YEAR3_MONTHS;
+    svg += `<line x1="${xx}" y1="${marginTop}" x2="${xx}" y2="${height - marginBottom}" stroke="${isY3 ? 'var(--ink)' : 'rgba(0,0,0,0.06)'}" stroke-width="${isY3 ? 1.5 : 1}" ${isY3 ? 'stroke-dasharray="4 3"' : ''}/>`;
+    const label = m === 0 ? 'heute' : 'Jahr ' + (m / 12);
+    svg += `<text x="${xx}" y="${height - marginBottom + 20}" text-anchor="middle" font-size="12" font-weight="${isY3 ? '600' : '400'}" fill="${isY3 ? 'var(--ink)' : 'var(--ink-soft)'}">${label}</text>`;
+  }
+
+  svg += `<path d="${pathForFn(vNixTun)}" fill="none" stroke="var(--urgent)" stroke-width="2.5" stroke-dasharray="6 5"/>`;
+  svg += `<path d="${pathForFn(vAusbildung)}" fill="none" stroke="var(--ink-soft)" stroke-width="2"/>`;
+  svg += `<path d="${pathForFn(vKlassisch)}" fill="none" stroke="var(--classic)" stroke-width="2"/>`;
+  svg += `<path d="${pathForFn(vPlus)}" fill="none" stroke="var(--plus)" stroke-width="2.5"/>`;
+  svg += `<path d="${pathForFn(vMedicruiter)}" fill="none" stroke="var(--solution)" stroke-width="3"/>`;
+
+  if (YEAR3_MONTHS <= maxMonth) {
+    const markers = [
+      { v: vNixTun(YEAR3_MONTHS), color: 'var(--urgent)' },
+      { v: vKlassisch(YEAR3_MONTHS), color: 'var(--classic)' },
+      { v: vMedicruiter(YEAR3_MONTHS), color: 'var(--solution)' },
+      { v: vPlus(YEAR3_MONTHS), color: 'var(--plus)' }
+    ];
+    markers.sort((a, b) => b.v - a.v);
+
+    const minGap = 16, labelX = x(YEAR3_MONTHS) + 10;
+    let lastY = -Infinity;
+    markers.forEach((m) => {
+      const dotY = y(m.v);
+      let labelY = dotY;
+      if (labelY < lastY + minGap) labelY = lastY + minGap;
+      lastY = labelY;
+      const delta = Math.round(m.v - total);
+      svg += `<circle cx="${x(YEAR3_MONTHS).toFixed(1)}" cy="${dotY.toFixed(1)}" r="4" fill="${m.color}"/>`;
+      if (Math.abs(labelY - dotY) > 3) {
+        svg += `<line x1="${(x(YEAR3_MONTHS) + 5).toFixed(1)}" y1="${dotY.toFixed(1)}" x2="${(labelX - 2).toFixed(1)}" y2="${labelY.toFixed(1)}" stroke="${m.color}" stroke-width="1" opacity="0.5"/>`;
+      }
+      svg += `<text x="${labelX.toFixed(1)}" y="${labelY.toFixed(1)}" dominant-baseline="central" font-size="12" font-weight="600" font-family="'IBM Plex Mono', monospace" fill="${m.color}">${delta > 0 ? '+' : ''}${delta}</text>`;
+    });
+  }
+  return svg;
+}
+
+function update() {
+  const total = Math.max(0, parseInt(totalInput.value) || 0);
+  const sharePct = parseInt(shareSlider.value);
+  shareValue.textContent = sharePct + '%';
+
+  const fraction = Math.min(1, horizonYears / 10);
+  const shareOfTotal = (sharePct / 100) * fraction;
+  const retiring = Math.round(total * shareOfTotal);
+  const horizonMonths = horizonYears * 12;
+
+  retiringCountEl.textContent = retiring;
+  ctaCountEl.textContent = retiring;
+  targetYearEl.textContent = new Date().getFullYear() + horizonYears;
+
+  const highlightCount = Math.min(50, Math.round(50 * shareOfTotal));
+  dotGrid.querySelectorAll('span').forEach((dot, i) => {
+    dot.classList.toggle('retiring', i < highlightCount);
+  });
+
+  raceTotalLabel.textContent = total;
+  timelineChart.innerHTML = buildChart(total, retiring, horizonMonths);
+
+  const earlyBound = Math.min(LAG_MEDICRUITER, horizonMonths);
+  const plusNeeded = Math.round(retiring * earlyBound / horizonMonths) || 0;
+  const regularNeeded = retiring - plusNeeded;
+  plusNeededEl.textContent = plusNeeded;
+  regularNeededEl.textContent = regularNeeded;
+
+  const fmtDelta = (v) => { const d = Math.round(v); return (d > 0 ? '+' : '') + d; };
+  deltaNixTun.textContent = fmtDelta(bestandAt(YEAR3_MONTHS, total, retiring, horizonMonths, Infinity) - total);
+  deltaKlassisch.textContent = fmtDelta(bestandAt(YEAR3_MONTHS, total, retiring, horizonMonths, LAG_KLASSISCH) - total);
+  closeKlassisch.textContent = closureLabel(horizonMonths, LAG_KLASSISCH);
+  deltaMedicruiter.textContent = fmtDelta(bestandAt(YEAR3_MONTHS, total, retiring, horizonMonths, LAG_MEDICRUITER) - total);
+  closeMedicruiter.textContent = closureLabel(horizonMonths, LAG_MEDICRUITER);
+
+  const plusMaxGapVal = Math.round((retiring / horizonMonths) * LAG_PLUS) || 0;
+  plusMaxGap.textContent = plusMaxGapVal > 0 ? '-' + plusMaxGapVal : '0';
+  deltaPlus.textContent = fmtDelta(bestandAtPlus(YEAR3_MONTHS, total, retiring, horizonMonths, LAG_PLUS, LAG_MEDICRUITER) - total);
+  closePlus.textContent = Math.round(LAG_MEDICRUITER + LAG_PLUS) + ' Monaten';
+}
+
+horizonButtons.forEach((btn) => {
+  btn.addEventListener('click', () => {
+    horizonButtons.forEach((b) => b.classList.remove('active'));
+    btn.classList.add('active');
+    horizonYears = parseInt(btn.dataset.years);
+    update();
+  });
+});
+
+totalInput.addEventListener('input', update);
+shareSlider.addEventListener('input', update);
+update();
+
+const leadForm = document.getElementById('leadForm');
+const formSuccess = document.getElementById('formSuccess');
+leadForm.addEventListener('submit', function (e) {
+  e.preventDefault();
+  // TODO: An CRM- oder E-Mail-Backend anbinden (z. B. Webhook, HubSpot, eigenes Formular-Handling)
+  leadForm.hidden = true;
+  formSuccess.hidden = false;
+});
+</script>
+
+</body>
+</html>
