@@ -41,6 +41,18 @@ komplett nach dem Design-System aus Schritt 1 neu gestylt. Die Kern-Eigenschaft 
 Modells (`bestandAtPlus` liefert für `t ∈ [9, H]` exakt `total`) wurde vor der
 Umsetzung verifiziert.
 
+### Modellannahmen (im Tool per Pop-up dokumentiert)
+
+- **Default-Anteil 55+ = 33 %** (entspricht ungefähr der Altersstruktur in der
+  deutschen Pflege; über den Regler anpassbar).
+- **Renteneintrittsalter = 64 Jahre**, bewusst unter der Regelaltersgrenze (67), da
+  viele Pflegekräfte über Erwerbsminderung oder Frührente früher ausscheiden. Die
+  55+-Gruppe scheidet damit über `64 − 55 = 9` Jahre aus →
+  `fraction = min(1, Horizont ÷ 9)`.
+- Vorlaufzeiten, reaktives Bestandsmodell, Plus-Hybrid, Aufteilung Plus/regulär und
+  der 3-Jahres-Vergleichspunkt sind vollständig im **„Modellannahmen"-Pop-up**
+  aufgeführt (Trigger unter dem Rechner).
+
 ### 3. Technischer Rahmen / Integration
 
 Die Zielseite `medicruiter.de` läuft auf **WordPress + Elementor + WPML** (custom

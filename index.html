@@ -119,6 +119,27 @@ input[type=range]{width:100%;accent-color:var(--blue);}
 
 footer{padding:34px 24px 48px;text-align:center;font-size:13px;color:var(--ink-soft);}
 
+/* Modellannahmen: Link + Pop-up */
+.assumptions-link{background:none;border:none;padding:0;margin:0;font-family:var(--font-body);font-size:13px;font-weight:600;color:var(--blue);cursor:pointer;text-decoration:underline;text-underline-offset:2px;}
+.assumptions-link:hover{color:var(--navy);}
+.modal-overlay{position:fixed;inset:0;background:rgba(22,50,79,0.55);display:flex;align-items:flex-start;justify-content:center;padding:32px 20px;overflow-y:auto;z-index:1000;}
+.modal-overlay[hidden]{display:none;}
+.modal{position:relative;background:var(--paper);border-radius:var(--radius);max-width:660px;width:100%;margin:auto;padding:40px 40px 36px;box-shadow:0 30px 60px -20px rgba(22,50,79,0.5);}
+.modal-close{position:absolute;top:16px;right:16px;width:36px;height:36px;border:none;border-radius:999px;background:var(--bg);color:var(--navy);font-size:22px;line-height:1;cursor:pointer;transition:background .15s ease;}
+.modal-close:hover{background:var(--line);}
+.modal h2{font-family:var(--font-display);font-weight:700;font-size:26px;color:var(--navy);margin:0 0 6px;padding-right:40px;}
+.modal .modal-intro{font-size:14px;color:var(--ink-soft);margin:0 0 22px;}
+.modal h3{font-family:var(--font-display);font-weight:600;font-size:16px;color:var(--navy);margin:22px 0 8px;}
+.modal p{font-size:14px;color:var(--ink);margin:0 0 8px;}
+.modal ul{margin:0 0 8px;padding-left:20px;}
+.modal li{font-size:14px;color:var(--ink);margin-bottom:6px;}
+.modal .lag-list li strong{font-family:var(--font-display);font-weight:700;color:var(--navy);}
+.modal .modal-disclaimer{margin-top:22px;padding-top:16px;border-top:1px solid var(--line);font-size:13px;color:var(--ink-soft);}
+@media (max-width:560px){
+  .modal{padding:34px 22px 28px;}
+  .modal h2{font-size:22px;}
+}
+
 @media (max-width:880px){
   .gap-stats{grid-template-columns:repeat(2,1fr);}
 }
@@ -152,8 +173,8 @@ footer{padding:34px 24px 48px;text-align:center;font-size:13px;color:var(--ink-s
         <input type="number" id="totalInput" value="250" min="1">
       </label>
       <label>Anteil 55 Jahre oder älter
-        <input type="range" id="shareSlider" min="0" max="50" value="50">
-        <span id="shareValue">50%</span>
+        <input type="range" id="shareSlider" min="0" max="50" value="33">
+        <span id="shareValue">33%</span>
       </label>
       <div>
         <span class="horizon-label">Planungshorizont</span>
@@ -171,7 +192,7 @@ footer{padding:34px 24px 48px;text-align:center;font-size:13px;color:var(--ink-s
       <div class="split-note">Empfehlung: <strong><span id="plusNeeded">–</span></strong> über medicruiter Plus (4–8 Wochen) + <strong><span id="regularNeeded">–</span></strong> über das reguläre Programm</div>
     </div>
   </div>
-  <p class="calc-note">Vereinfachte Schätzung: Wir nehmen an, dass sich Renteneintritte aus der Gruppe 55+ gleichmäßig auf die nächsten zehn Jahre verteilen. Für eine Analyse Ihrer tatsächlichen Altersstruktur sprechen wir das gern im Erstgespräch durch.</p>
+  <p class="calc-note">Vereinfachte Schätzung: Wir nehmen ein Renteneintrittsalter von 64 Jahren an, sodass die Gruppe der 55-Jährigen und älter gleichmäßig über neun Jahre ausscheidet. Für eine Analyse Ihrer tatsächlichen Altersstruktur sprechen wir das gern im Erstgespräch durch. <button type="button" class="assumptions-link" id="assumptionsTrigger">Alle Modellannahmen anzeigen</button></p>
 </section>
 
 <section class="race-section">
@@ -235,6 +256,44 @@ footer{padding:34px 24px 48px;text-align:center;font-size:13px;color:var(--ink-s
   <div id="formSuccess" class="form-success" hidden>Danke! Wir melden uns innerhalb von 24 Stunden bei Ihnen.</div>
 </section>
 
+<div class="modal-overlay" id="assumptionsModal" hidden>
+  <div class="modal" role="dialog" aria-modal="true" aria-labelledby="assumptionsTitle">
+    <button type="button" class="modal-close" id="assumptionsClose" aria-label="Schließen">&times;</button>
+    <h2 id="assumptionsTitle">Modellannahmen</h2>
+    <p class="modal-intro">Der Rechner ist eine vereinfachte Modellrechnung mit den von Ihnen eingegebenen Werten. Diese Annahmen liegen zugrunde:</p>
+
+    <h3>Renteneintritte</h3>
+    <ul>
+      <li>Betrachtet wird die Gruppe „55 Jahre oder älter". Der Default-Anteil von <strong>33 %</strong> entspricht ungefähr der Altersstruktur in der deutschen Pflege und lässt sich über den Regler anpassen.</li>
+      <li>Angenommenes Renteneintrittsalter: <strong>64 Jahre</strong> – bewusst unter der gesetzlichen Regelaltersgrenze (67), weil viele Pflegekräfte wegen der hohen Arbeitsbelastung früher über Erwerbsminderungs- oder Frührente ausscheiden.</li>
+      <li>Die 55+-Gruppe scheidet gleichmäßig über die <strong>9 Jahre</strong> bis zum Alter 64 aus. Im gewählten Planungshorizont gehen also <em>Anteil&nbsp;× min(1; Horizont ÷ 9)</em> der Belegschaft in Rente.</li>
+    </ul>
+
+    <h3>Recruiting-Wege (durchschnittliche Vorlaufzeit bis zur Nachbesetzung)</h3>
+    <ul class="lag-list">
+      <li><strong>Eigene Ausbildung</strong> – 36 Monate</li>
+      <li><strong>Klassische Personalvermittlung</strong> – 15 Monate</li>
+      <li><strong>medicruiter (regulär)</strong> – 7,5 Monate</li>
+      <li><strong>medicruiter Plus</strong> – 1,5 Monate (ca. 4–8 Wochen)</li>
+    </ul>
+
+    <h3>Bestandsmodell</h3>
+    <ul>
+      <li>Reaktiv: Eine Stelle wird erst nachbesetzt, wenn sie frei wird, und braucht dann die Vorlaufzeit des jeweiligen Wegs.</li>
+      <li>„Gar nix tun" bedeutet, dass Stellen nie nachbesetzt werden – der Bestand erholt sich nicht von selbst.</li>
+      <li>medicruiter Plus deckt alle Renteneintritte der Anlaufphase mit kurzer Vorlaufzeit ab, bis die reguläre Pipeline nach 7,5 Monaten ausgereift ist und neue Eintritte laufend abfängt. Der Anlauf-Rückstand ist nach insgesamt 9 Monaten vollständig getilgt – unabhängig von den Eingaben.</li>
+    </ul>
+
+    <h3>Aufteilung Plus vs. reguläres Programm</h3>
+    <p>Empfohlen wird der Anteil <em>min(7,5; Horizont) ÷ Horizont</em> über medicruiter Plus, der Rest über das reguläre Programm.</p>
+
+    <h3>Vergleichspunkt</h3>
+    <p>Alle Kennzahlen „nach 3 Jahren" beziehen sich auf Monat 36 nach heute.</p>
+
+    <p class="modal-disclaimer">Es werden keine echten Personaldaten verarbeitet. Für eine belastbare Analyse Ihrer tatsächlichen Altersstruktur sprechen wir das gern im Erstgespräch durch.</p>
+  </div>
+</div>
+
 <footer>medicruiter GmbH · Düsseldorf</footer>
 
 <script>
@@ -273,6 +332,15 @@ const LAG_AUSBILDUNG = 36, LAG_KLASSISCH = 15, LAG_MEDICRUITER = 7.5, YEAR3_MONT
 // (LAG_MEDICRUITER Monate) - danach deckt das reguläre Programm neue
 // Renteneintritte laufend ab, ohne dass sich erneut ein Rückstand aufbaut.
 const LAG_PLUS = 1.5;
+
+// Renteneintritts-Annahme: Betrachtet wird die Gruppe "55 Jahre oder älter".
+// Angenommenes Renteneintrittsalter 64 (bewusst unter der Regelaltersgrenze von 67,
+// da viele Pflegekräfte wegen der hohen Arbeitsbelastung über Erwerbsminderung oder
+// Frührente früher ausscheiden). Die 55+-Gruppe scheidet damit gleichmäßig über
+// (64 - 55) = 9 Jahre aus.
+const RETIREMENT_AGE = 64;
+const AGE_THRESHOLD = 55;
+const RETIREMENT_WINDOW = RETIREMENT_AGE - AGE_THRESHOLD; // 9 Jahre
 
 // Schriften für die SVG-Beschriftungen (Design-System der medicruiter-Seite)
 const CHART_FONT = "'Inter', sans-serif";
@@ -395,7 +463,7 @@ function update() {
   const sharePct = parseInt(shareSlider.value);
   shareValue.textContent = sharePct + '%';
 
-  const fraction = Math.min(1, horizonYears / 10);
+  const fraction = Math.min(1, horizonYears / RETIREMENT_WINDOW);
   const shareOfTotal = (sharePct / 100) * fraction;
   const retiring = Math.round(total * shareOfTotal);
   const horizonMonths = horizonYears * 12;
@@ -451,6 +519,29 @@ leadForm.addEventListener('submit', function (e) {
   // TODO: An CRM- oder E-Mail-Backend anbinden (z. B. Webhook, HubSpot, eigenes Formular-Handling)
   leadForm.hidden = true;
   formSuccess.hidden = false;
+});
+
+// Modellannahmen-Pop-up
+const assumptionsModal = document.getElementById('assumptionsModal');
+const assumptionsTrigger = document.getElementById('assumptionsTrigger');
+const assumptionsClose = document.getElementById('assumptionsClose');
+function openAssumptions() {
+  assumptionsModal.hidden = false;
+  document.body.style.overflow = 'hidden';
+  assumptionsClose.focus();
+}
+function closeAssumptions() {
+  assumptionsModal.hidden = true;
+  document.body.style.overflow = '';
+  assumptionsTrigger.focus();
+}
+assumptionsTrigger.addEventListener('click', openAssumptions);
+assumptionsClose.addEventListener('click', closeAssumptions);
+assumptionsModal.addEventListener('click', function (e) {
+  if (e.target === assumptionsModal) closeAssumptions();
+});
+document.addEventListener('keydown', function (e) {
+  if (e.key === 'Escape' && !assumptionsModal.hidden) closeAssumptions();
 });
 </script>
 
