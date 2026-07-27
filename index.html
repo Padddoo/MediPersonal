@@ -97,6 +97,29 @@ input[type=range]{width:100%;accent-color:var(--blue);}
 .gap-card.highlight .gap-number{color:var(--navy);}
 .gap-desc{font-size:13px;color:var(--ink-soft);}
 
+/* Versorgungslücke (Personenmonate) */
+.shortfall{margin-top:40px;border-top:1px solid var(--line);padding-top:32px;}
+.shortfall-h{font-family:var(--font-display);font-weight:700;font-size:clamp(20px,2.4vw,26px);color:var(--navy);margin:0 0 8px;}
+.shortfall-sub{color:var(--ink-soft);font-size:14px;margin:0 0 22px;max-width:680px;}
+.shortfall-lead{background:var(--gold-bg);border:1px solid var(--gold);border-radius:12px;padding:16px 20px;font-size:15px;color:var(--navy);margin:0 0 24px;}
+.shortfall-lead strong{font-family:var(--font-display);font-weight:800;}
+.sf-row{display:grid;grid-template-columns:180px 1fr auto;align-items:center;gap:14px;margin-bottom:12px;}
+.sf-label{font-size:13px;font-weight:600;color:var(--ink);}
+.sf-track{background:var(--bg);border-radius:8px;height:24px;overflow:hidden;}
+.sf-fill{height:100%;border-radius:8px;min-width:2px;transition:width .3s ease;}
+.sf-problem{background:var(--urgent);}
+.sf-ausbildung{background:var(--ink-soft);}
+.sf-klassisch{background:var(--classic);}
+.sf-medicruiter{background:var(--blue);}
+.sf-plus{background:var(--navy-deep);}
+.sf-val{font-family:var(--font-display);font-weight:700;font-size:15px;color:var(--navy);font-variant-numeric:tabular-nums;white-space:nowrap;}
+.sf-row.highlight .sf-label,.sf-row.highlight .sf-val{color:var(--gold-deep);}
+.sf-note{font-size:12px;color:var(--ink-soft);margin:6px 0 0;}
+@media (max-width:560px){
+  .sf-row{grid-template-columns:1fr auto;}
+  .sf-track{grid-column:1 / -1;order:3;}
+}
+
 /* Vertrauen */
 .trust-section{background:var(--paper);border-top:1px solid var(--line);border-bottom:1px solid var(--line);padding:44px 24px;}
 .trust-grid{max-width:1000px;margin:0 auto;display:flex;gap:48px;flex-wrap:wrap;}
@@ -228,6 +251,20 @@ footer{padding:34px 24px 48px;text-align:center;font-size:13px;color:var(--ink-s
       <div class="gap-desc">Pflegekräfte nach 3 Jahren · Delle von höchstens <span id="plusMaxGap">–</span>, komplett aufgeholt nach <span id="closePlus">–</span></div>
     </div>
   </div>
+
+  <div class="shortfall">
+    <h3 class="shortfall-h">Die eigentliche Rechnung: verlorene Versorgungsmonate</h3>
+    <p class="shortfall-sub">Jede unbesetzte Stelle bedeutet fehlende Pflege. Die Fläche zwischen Ausgangsbestand und Kurve – die Summe der Unterbesetzung über die Zeit – ist der wahre Preis jedes Wegs. Gemessen in Personenmonaten, über den gesamten dargestellten Zeitraum. Je kleiner, desto besser.</p>
+    <p class="shortfall-lead">Mit <strong>medicruiter Plus</strong> verlieren Sie nur <strong><span id="sfPlusVal">–</span></strong> Personenmonate – gegenüber der klassischen Personalvermittlung sparen Sie rund <strong><span id="sfSaved">–</span></strong>.</p>
+    <div class="shortfall-bars">
+      <div class="sf-row"><span class="sf-label">Gar nix tun</span><div class="sf-track"><div class="sf-fill sf-problem" id="sfBarNixTun"></div></div><span class="sf-val" id="sfNixTun">–</span></div>
+      <div class="sf-row"><span class="sf-label">Eigene Ausbildung</span><div class="sf-track"><div class="sf-fill sf-ausbildung" id="sfBarAusbildung"></div></div><span class="sf-val" id="sfAusbildung">–</span></div>
+      <div class="sf-row"><span class="sf-label">Klassische Personalvermittlung</span><div class="sf-track"><div class="sf-fill sf-klassisch" id="sfBarKlassisch"></div></div><span class="sf-val" id="sfKlassisch">–</span></div>
+      <div class="sf-row"><span class="sf-label">medicruiter</span><div class="sf-track"><div class="sf-fill sf-medicruiter" id="sfBarMedicruiter"></div></div><span class="sf-val" id="sfMedicruiter">–</span></div>
+      <div class="sf-row highlight"><span class="sf-label">medicruiter Plus</span><div class="sf-track"><div class="sf-fill sf-plus" id="sfBarPlus"></div></div><span class="sf-val" id="sfPlus">–</span></div>
+    </div>
+    <p class="sf-note">Personenmonate = fehlende Pflegekräfte × Monate. „Gar nix tun" wächst über den dargestellten Zeitraum hinaus immer weiter, weil Stellen nie nachbesetzt werden.</p>
+  </div>
 </section>
 
 <section class="trust-section">
@@ -326,6 +363,16 @@ const deltaPlus = document.getElementById('deltaPlus');
 const plusMaxGap = document.getElementById('plusMaxGap');
 const closePlus = document.getElementById('closePlus');
 
+const sfEls = {
+  nixTun: { val: document.getElementById('sfNixTun'), bar: document.getElementById('sfBarNixTun') },
+  ausbildung: { val: document.getElementById('sfAusbildung'), bar: document.getElementById('sfBarAusbildung') },
+  klassisch: { val: document.getElementById('sfKlassisch'), bar: document.getElementById('sfBarKlassisch') },
+  medicruiter: { val: document.getElementById('sfMedicruiter'), bar: document.getElementById('sfBarMedicruiter') },
+  plus: { val: document.getElementById('sfPlus'), bar: document.getElementById('sfBarPlus') }
+};
+const sfPlusVal = document.getElementById('sfPlusVal');
+const sfSaved = document.getElementById('sfSaved');
+
 const LAG_AUSBILDUNG = 36, LAG_KLASSISCH = 15, LAG_MEDICRUITER = 7.5, YEAR3_MONTHS = 36;
 // medicruiter Plus: 4-8 Wochen Time-to-fill (~1,5 Monate). Genutzt wird Plus nur,
 // bis die reguläre medicruiter-Pipeline ihre volle Kapazität erreicht hat
@@ -379,6 +426,20 @@ function closureLabel(H, lag) {
   return months > 0 ? years + ' J., ' + months + ' Mon.' : years + ' Jahre';
 }
 
+// Kumulierte Unterbesetzung (Personenmonate) = Integral von (total - Bestand)
+// über den Zeitraum [0, windowMonths]. Trapezregel mit feinem Schritt.
+function cumulativeShortfall(fn, total, windowMonths) {
+  const step = 0.5;
+  let area = 0;
+  let prev = Math.max(0, total - fn(0));
+  for (let t = step; t <= windowMonths + 1e-9; t += step) {
+    const cur = Math.max(0, total - fn(t));
+    area += (prev + cur) / 2 * step;
+    prev = cur;
+  }
+  return area;
+}
+
 function buildChart(total, R, H) {
   const width = 880, height = 400;
   const marginLeft = 54, marginRight = 24, marginTop = 24, marginBottom = 44;
@@ -424,6 +485,19 @@ function buildChart(total, R, H) {
     const label = m === 0 ? 'heute' : 'Jahr ' + (m / 12);
     svg += `<text x="${xx}" y="${height - marginBottom + 20}" text-anchor="middle" font-size="12" font-family="${CHART_FONT}" font-weight="${isY3 ? '600' : '400'}" fill="${isY3 ? 'var(--navy)' : 'var(--ink-soft)'}">${label}</text>`;
   }
+
+  // Flächen zwischen Ausgangsbestand und Kurve = kumulierte Unterbesetzung.
+  // Wir heben den Kontrast hervor: die große rote "gar nix tun"-Fläche gegen
+  // die winzige medicruiter-Plus-Fläche.
+  function areaForFn(fn) {
+    const step = Math.max(1, Math.ceil(maxMonth / 120));
+    let d = 'M' + x(0).toFixed(1) + ' ' + y(total).toFixed(1);
+    for (let t = 0; t <= maxMonth; t += step) d += ' L' + x(t).toFixed(1) + ' ' + y(fn(t)).toFixed(1);
+    d += ' L' + x(maxMonth).toFixed(1) + ' ' + y(total).toFixed(1) + ' Z';
+    return d;
+  }
+  svg += `<path d="${areaForFn(vNixTun)}" fill="var(--urgent)" opacity="0.08" stroke="none"/>`;
+  svg += `<path d="${areaForFn(vPlus)}" fill="var(--navy-deep)" opacity="0.16" stroke="none"/>`;
 
   svg += `<path d="${pathForFn(vNixTun)}" fill="none" stroke="var(--urgent)" stroke-width="2.5" stroke-dasharray="6 5"/>`;
   svg += `<path d="${pathForFn(vAusbildung)}" fill="none" stroke="var(--ink-soft)" stroke-width="2"/>`;
@@ -497,6 +571,23 @@ function update() {
   plusMaxGap.textContent = plusMaxGapVal > 0 ? '-' + plusMaxGapVal : '0';
   deltaPlus.textContent = fmtDelta(bestandAtPlus(YEAR3_MONTHS, total, retiring, horizonMonths, LAG_PLUS, LAG_MEDICRUITER) - total);
   closePlus.textContent = Math.round(LAG_MEDICRUITER + LAG_PLUS) + ' Monaten';
+
+  // Kumulierte Unterbesetzung (Personenmonate) über denselben Zeitraum wie das Diagramm
+  const windowMonths = Math.ceil((horizonMonths + LAG_AUSBILDUNG + 6) / 12) * 12;
+  const sf = {
+    nixTun: cumulativeShortfall((t) => bestandAt(t, total, retiring, horizonMonths, Infinity), total, windowMonths),
+    ausbildung: cumulativeShortfall((t) => bestandAt(t, total, retiring, horizonMonths, LAG_AUSBILDUNG), total, windowMonths),
+    klassisch: cumulativeShortfall((t) => bestandAt(t, total, retiring, horizonMonths, LAG_KLASSISCH), total, windowMonths),
+    medicruiter: cumulativeShortfall((t) => bestandAt(t, total, retiring, horizonMonths, LAG_MEDICRUITER), total, windowMonths),
+    plus: cumulativeShortfall((t) => bestandAtPlus(t, total, retiring, horizonMonths, LAG_PLUS, LAG_MEDICRUITER), total, windowMonths)
+  };
+  const sfMax = Math.max(sf.nixTun, 1);
+  Object.keys(sf).forEach((k) => {
+    sfEls[k].val.textContent = Math.round(sf[k]).toLocaleString('de-DE');
+    sfEls[k].bar.style.width = (100 * sf[k] / sfMax) + '%';
+  });
+  sfPlusVal.textContent = Math.round(sf.plus).toLocaleString('de-DE');
+  sfSaved.textContent = Math.max(0, Math.round(sf.klassisch - sf.plus)).toLocaleString('de-DE') + ' Personenmonate';
 }
 
 horizonButtons.forEach((btn) => {
